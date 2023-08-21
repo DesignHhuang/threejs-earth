@@ -1,9 +1,6 @@
-# 3d-earth
+# threejs-earth
 本项目使用 [three-ts-webpack](https://github.com/GhostCatcg/three-ts-webpack) 构建
 
-[Live Demo](https://gcat.cc/demo/earth)
-
-![alt](./3d-earth.png)
 ## Todolist
 1. - [x] 加载效果[loading...]
 2. - [x] 地球、以及星空背景🌏
