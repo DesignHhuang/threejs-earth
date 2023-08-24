@@ -396,7 +396,9 @@ export default class earth {
         };
         const canvas = await html2canvas(document.getElementById("html2canvas"), opts)
         const dataURL = canvas.toDataURL("image/png");
+        console.log(dataURL)
         const map = new TextureLoader().load(dataURL);
+        console.log(map)
         const material = new SpriteMaterial({
           map: map,
           transparent: true,
