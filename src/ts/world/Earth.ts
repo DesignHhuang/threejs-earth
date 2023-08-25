@@ -394,11 +394,13 @@ export default class earth {
           scale: 6,
           dpi: window.devicePixelRatio,
         };
+        console.log(document.getElementById("html2canvas"))
         const canvas = await html2canvas(document.getElementById("html2canvas"), opts)
+        //console.log(canvas);
         const dataURL = canvas.toDataURL("image/png");
-        console.log(dataURL)
+        //console.log(dataURL)
         const map = new TextureLoader().load(dataURL);
-        console.log(map)
+        //console.log(map)
         const material = new SpriteMaterial({
           map: map,
           transparent: true,
