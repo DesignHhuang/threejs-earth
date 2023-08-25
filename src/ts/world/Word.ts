@@ -58,10 +58,17 @@ export default class World {
       this.pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
     });
 
+
+
     this.resources = new Resources(async () => {
       await this.createEarth()
       // 开始渲染
       this.render()
+
+      document.addEventListener('pointerdown', () => {
+        console.log('去下面的地址')
+        console.log(this.earth.INTERSECTED.userData.pwid)
+      });
     })
   }
 
