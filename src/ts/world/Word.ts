@@ -1,6 +1,6 @@
 import {
   MeshBasicMaterial, PerspectiveCamera,
-  Scene, ShaderMaterial, WebGLRenderer
+  Scene, ShaderMaterial, Vector2, WebGLRenderer
 } from "three";
 import {
   OrbitControls
@@ -28,6 +28,7 @@ export default class World {
   public resources: Resources;
   public option: IWord;
   public earth: Earth;
+  public pointer: Vector2
 
 
   constructor(option: IWord) {
@@ -42,6 +43,8 @@ export default class World {
     this.controls = this.basic.controls
     this.camera = this.basic.camera
 
+    this.pointer = new Vector2();
+
     this.sizes = new Sizes({ dom: option.dom })
 
     this.sizes.$on('resize', () => {
@@ -49,6 +52,11 @@ export default class World {
       this.camera.aspect = Number(this.sizes.viewport.width) / Number(this.sizes.viewport.height)
       this.camera.updateProjectionMatrix()
     })
+
+    document.addEventListener('pointermove', (event) => {
+      this.pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+      this.pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
+    });
 
     this.resources = new Resources(async () => {
       await this.createEarth()
@@ -89,6 +97,8 @@ export default class World {
       }
     })
 
+
+
     this.scene.add(this.earth.group)
 
     await this.earth.init()
@@ -106,6 +116,6 @@ export default class World {
     requestAnimationFrame(this.render.bind(this))
     this.renderer.render(this.scene, this.camera)
     this.controls && this.controls.update()
-    this.earth && this.earth.render()
+    this.earth && this.earth.render(this.pointer, this.camera)
   }
 }

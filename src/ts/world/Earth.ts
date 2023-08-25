@@ -1,8 +1,8 @@
 import {
   BufferAttribute, BufferGeometry, Color, DoubleSide, Group, Material, Mesh, MeshBasicMaterial, NormalBlending,
   Object3D,
-  Points, PointsMaterial, ShaderMaterial,
-  SphereBufferGeometry, Sprite, SpriteMaterial, Texture, TextureLoader, Vector3
+  Points, PointsMaterial, Raycaster, ShaderMaterial,
+  SphereBufferGeometry, Sprite, SpriteMaterial, Texture, TextureLoader, Vector2, Vector3
 } from "three";
 
 import html2canvas from "html2canvas";
@@ -68,6 +68,8 @@ export default class earth {
 
   public group: Group;
   public earthGroup: Group;
+  public raycaster: Raycaster
+  public INTERSECTED
 
   public around: BufferGeometry
   public aroundPoints: Points<BufferGeometry, PointsMaterial>;
@@ -80,6 +82,7 @@ export default class earth {
   public punctuationMaterial: MeshBasicMaterial;
   public markupPoint: Group;
   public waveMeshArr: Object3D[];
+  public spritesArr: Sprite[];
 
   public circleLineList: any[];
   public circleList: any[];
@@ -91,13 +94,18 @@ export default class earth {
   constructor(options: options) {
 
     this.options = options;
-
+    this.INTERSECTED = null
     this.group = new Group()
     this.group.name = "group";
     this.group.scale.set(0, 0, 0)
     this.earthGroup = new Group()
     this.group.add(this.earthGroup)
     this.earthGroup.name = "EarthGroup";
+
+    // 光线投射
+    this.raycaster = new Raycaster();
+
+    this.spritesArr = []
 
     // 标注点效果
     this.markupPoint = new Group()
@@ -408,7 +416,12 @@ export default class earth {
         const sprite = new Sprite(material);
         const len = 5 + (e.name.length - 2) * 2;
         sprite.scale.set(len, 3, 1);
+        sprite.userData = {
+          pwid: 13222,
+          len: len
+        }
         sprite.position.set(p.x * 1.1, p.y * 1.1, p.z * 1.1);
+        this.spritesArr.push(sprite)
         this.earth.add(sprite);
       }))
     }))
@@ -541,7 +554,7 @@ export default class earth {
     })
   }
 
-  render() {
+  render(pointer, camera) {
 
     this.flyLineArcGroup?.userData['flyLineArray']?.forEach(fly => {
       fly.rotation.z += this.options.flyLine.speed; // 调节飞线速度
@@ -560,6 +573,32 @@ export default class earth {
       this.uniforms.time.value < -this.timeValue
         ? this.timeValue
         : this.uniforms.time.value - 1;
+
+    // 通过摄像机和鼠标位置更新射线
+    this.raycaster.setFromCamera(pointer, camera);
+
+    // 计算物体和射线的焦点
+    const intersects = this.raycaster.intersectObjects(this.spritesArr, false);
+    if (intersects.length > 0) {
+      //console.log('找到点了')
+      //console.log(intersects[0].object)
+      document.body.style.cursor = 'pointer';
+
+      if (this.INTERSECTED != intersects[0].object) {
+        if (this.INTERSECTED) this.INTERSECTED.scale.set(this.INTERSECTED.userData.len, 3, 1);
+        this.INTERSECTED = intersects[0].object;
+        console.log(this.INTERSECTED.userData.len * 2)
+        const len = this.INTERSECTED.userData.len * 1.5
+        this.INTERSECTED.scale.set(len, 4.5, 1)
+      }
+    } else {
+      //sphereInter.visible = false;
+      //intersects[0].object.translateX(100)
+      document.body.style.cursor = 'initial';
+      //intersects[0].object.scale.set(10,3,1)
+      if (this.INTERSECTED) this.INTERSECTED.scale.set(this.INTERSECTED.userData.len, 3, 1);
+      this.INTERSECTED = null;
+    }
 
     if (this.waveMeshArr.length) {
       this.waveMeshArr.forEach((mesh: Mesh) => {
