@@ -338,7 +338,7 @@ export default class earth {
       this.punctuationMaterial = new MeshBasicMaterial({
         color: this.options.punctuation.circleColor,
         map: this.options.textures.label,
-        //transparent: true, //使用背景透明的png贴图，注意开启透明计算
+        transparent: true, //使用背景透明的png贴图，注意开启透明计算
         depthWrite: false, //禁止写入深度缓冲区数据
       });
 
@@ -354,7 +354,7 @@ export default class earth {
       }); //光柱
       this.markupPoint.add(LightPillar);
       const WaveMesh = createWaveMesh({ radius, lon, lat, textures: this.options.textures }); //波动光圈
-      //this.markupPoint.add(WaveMesh);
+      this.markupPoint.add(WaveMesh);
       this.waveMeshArr.push(WaveMesh);
 
       /* await Promise.all(item.endArray.map((obj) => {
