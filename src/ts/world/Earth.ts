@@ -157,11 +157,11 @@ export default class earth {
     return new Promise(async (resolve) => {
 
       this.createEarth(); // 创建地球
-      this.createStars(); // 添加星星
+      //this.createStars(); // 添加星星
       this.createEarthGlow() // 创建地球辉光
-      this.createEarthAperture() // 创建地球的大气层
-      await this.createMarkupPoint() // 创建柱状点位
-      await this.createSpriteLabel() // 创建标签
+      //this.createEarthAperture() // 创建地球的大气层
+      //await this.createMarkupPoint() // 创建柱状点位
+      //await this.createSpriteLabel() // 创建标签
       //this.createAnimateCircle() // 创建环绕卫星
       //this.createFlyLine() // 创建飞线
 
@@ -255,13 +255,13 @@ export default class earth {
       map: texture, // 设置精灵纹理贴图
       color: 0x4390d1,
       transparent: true, //开启透明
-      opacity: 0.7, // 可以通过透明度整体调节光圈
+      opacity: 1, // 可以通过透明度整体调节光圈
       depthWrite: false, //禁止写入深度缓冲区数据
     });
 
     // 创建表示地球光圈的精灵模型
     const sprite = new Sprite(spriteMaterial);
-    sprite.scale.set(R * 3.0, R * 3.0, 1); //适当缩放精灵
+    //sprite.scale.set(R * 3.0, R * 3.0, 1); //适当缩放精灵
     this.earthGroup.add(sprite);
   }
 
